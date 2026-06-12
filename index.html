@@ -833,11 +833,11 @@ setTimeout(async()=>{
   document.getElementById('sdot').className='dot sp';
   document.getElementById('stxt').textContent='กำลังซิงค์...';
   try{
-    const res=await Promise.all(Object.keys(TABS).map(async k=>{
+    const res=await Promise.all(Object.keys(TABS).filter(k=>k!=='design').map(async k=>{
       const r=await fetch(API+'?tab='+encodeURIComponent(TABS[k].sh));
       const raw=await r.json();
       const hdrs=raw[0]||[];
-      const rws=raw.slice(1).map(row=>{const o={};hdrs.forEach((h,i)=>o[h]=row[i]||'');return o;}).filter(r=>r.id);
+      const rws=raw.slice(1).map(row=>{const o={};hdrs.forEach((h,i)=>o[h]=String(row[i]||'');return o;}).filter(r=>r.id);
       if(rws.length>0)DB[k]=rws;
       return rws.length;
     }));
