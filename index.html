@@ -276,21 +276,16 @@ function rows(){
 function draw(){
   if(tab==='design'){drawDesign();return;}
   // restore toolbar for non-design tabs
-  const addBtn=document.querySelector('.btn-add');
-  const vtg=document.querySelector('.vtg');
-  const toolbar=document.querySelector('.toolbar');
-  if(addBtn) addBtn.style.display='flex';
-  if(vtg) vtg.style.display='flex';
-  if(toolbar) toolbar.style.display='flex';
+  document.querySelector('.btn-add')?.style && (document.querySelector('.btn-add').style.display='flex');
+  document.querySelector('.vtg')?.style && (document.querySelector('.vtg').style.display='flex');
+  document.querySelector('.toolbar')?.style && (document.querySelector('.toolbar').style.display='flex');
   const rr=rows();
   const area=document.getElementById('area');
   if(!rr.length){area.innerHTML='<div class="empty"><div style="font-size:36px;margin-bottom:10px">📋</div><p>ยังไม่มีรายการ กด + เพิ่มรายการ</p></div>';return;}
   view==='kanban'?dKanban(rr,area):dTable(rr,area);
   // hide/show toolbar elements
-  const addBtn=document.querySelector('.btn-add');
-  const vtg=document.querySelector('.vtg');
-  if(addBtn) addBtn.style.display=tab==='design'?'none':'flex';
-  if(vtg) vtg.style.display=tab==='design'?'none':'flex';
+  document.querySelector('.btn-add')?.style && (document.querySelector('.btn-add').style.display=tab==='design'?'none':'flex');
+  document.querySelector('.vtg')?.style && (document.querySelector('.vtg').style.display=tab==='design'?'none':'flex');
 }
 function dKanban(rr,area){
   const n=Math.min(STS[tab].length,5);
@@ -734,12 +729,9 @@ function goTab(t,el){
 function goView(v){view=v;document.getElementById('vk').classList.toggle('on',v==='kanban');document.getElementById('vt').classList.toggle('on',v==='table');draw();}
 
 function drawDesign(){
-  const addBtn=document.querySelector('.btn-add');
-  const vtg=document.querySelector('.vtg');
-  const toolbar=document.querySelector('.toolbar');
-  if(addBtn) addBtn.style.display='none';
-  if(vtg) vtg.style.display='none';
-  if(toolbar) toolbar.style.display='none';
+  document.querySelector('.btn-add')?.style && (document.querySelector('.btn-add').style.display='none');
+  document.querySelector('.vtg')?.style && (document.querySelector('.vtg').style.display='none');
+  document.querySelector('.toolbar')?.style && (document.querySelector('.toolbar').style.display='none');
   const area=document.getElementById('area');
   // Get all unique QT numbers
   // Show projects from lead that have status ออกแบบแล้ว or from DESIGNS
