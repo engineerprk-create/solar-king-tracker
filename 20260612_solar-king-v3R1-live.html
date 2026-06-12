@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Solar King · ติดตามงาน v3</title>
+<style>
+:root{
+  --navy:#1B3A6B;--navy-dk:#0F2548;--navy-lt:#E8EDF5;
+  --green-dk:#27500A;--green-lt:#EAF3DE;
+  --amber-dk:#633806;--amber-lt:#FAEEDA;
+  --blue-dk:#0C447C;--blue-lt:#E6F1FB;
+  --purple-dk:#3C3489;--purple-lt:#EEEDFE;
+  --red-dk:#791F1F;--red-lt:#FCEBEB;
+  --gray-dk:#5f5e5a;--gray-lt:#f0f0ed;
+  --bd:#d8dde8;--tx:#0f1f3d;--tx2:#4a5568;--tx3:#8a96a8;
+  --bg:#fff;--bg2:#f4f6fa;--bg3:#eaeef5;
+  --r:8px;--rl:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Sarabun,-apple-system,sans-serif;background:var(--bg2);color:var(--tx);font-size:14px;line-height:1.6;}
+.topbar{background:var(--navy);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand img{width:36px;height:36px;border-radius:7px;object-fit:cover;}
+.brand-name{font-weight:600;font-size:15px;color:#fff;}
+.brand-name b{color:#E8C060;font-weight:600;}
+.sync{font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#4ade80;}
+.dot.sp{background:#fbbf24;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.tabbar{background:var(--bg);border-bottom:1px solid var(--bd);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.tabs{display:flex;}
+.tab{padding:13px 14px;font-size:13px;font-weight:500;color:var(--tx2);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:inherit;}
+.tab.on{color:var(--navy);border-bottom-color:var(--navy);}
+.cnt{display:inline-flex;background:var(--bg3);color:var(--tx3);border-radius:20px;font-size:11px;padding:0 7px;margin-left:5px;}
+.tab.on .cnt{background:var(--navy-lt);color:var(--navy);}
+.vtg{display:flex;gap:3px;padding:10px 0;}
+.vb{border:1px solid var(--bd);background:var(--bg);border-radius:var(--r);padding:5px 10px;cursor:pointer;color:var(--tx2);font-size:14px;font-family:inherit;}
+.vb.on{background:var(--bg3);color:var(--tx);}
+.metrics{padding:1rem 1.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.metric{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 16px;}
+.ml{font-size:12px;color:var(--tx2);margin-bottom:4px;}
+.mn{font-size:24px;font-weight:600;}
+.mn.red{color:#A32D2D;}
+.main{padding:1rem 1.5rem 2rem;}
+.toolbar{display:flex;gap:8px;margin-bottom:1rem;align-items:center;}
+.toolbar input,.toolbar select{font-family:inherit;font-size:13px;padding:7px 12px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);color:var(--tx);outline:none;}
+.toolbar input{flex:1;}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--navy);}
+.btn-add{background:var(--navy);color:#fff;border:none;border-radius:var(--r);padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.btn-add:hover{background:var(--navy-dk);}
+.kanban{display:grid;gap:10px;align-items:start;}
+.kcol{background:var(--bg3);border-radius:var(--rl);padding:10px;}
+.kch{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.kct{font-size:11px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;}
+.kcn{font-size:11px;background:var(--bg);border:1px solid var(--bd);border-radius:20px;padding:1px 8px;color:var(--tx3);}
+.card{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:box-shadow .15s;}
+.card:hover{box-shadow:0 2px 8px rgba(27,58,107,.1);}
+.ctop{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:2px;}
+.cname{font-size:13px;font-weight:600;color:var(--tx);}
+.cqt{font-size:11px;color:var(--navy);font-weight:500;margin-bottom:3px;}
+.csub{font-size:12px;color:var(--tx2);margin-bottom:7px;line-height:1.4;}
+.cft{display:flex;justify-content:space-between;align-items:center;}
+.cdel{border:none;background:transparent;color:var(--tx3);cursor:pointer;font-size:14px;padding:2px 5px;border-radius:4px;opacity:0;}
+.card:hover .cdel{opacity:1;}
+.cdel:hover{background:var(--red-lt);color:#A32D2D;}
+.lbadge{font-size:10px;background:var(--navy-lt);color:var(--navy);border-radius:20px;padding:1px 7px;font-weight:500;cursor:pointer;flex-shrink:0;}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500;white-space:nowrap;}
+.s-done{background:var(--green-lt);color:var(--green-dk);}
+.s-act{background:var(--blue-lt);color:var(--blue-dk);}
+.s-no{background:var(--red-lt);color:var(--red-dk);}
+.s-wait{background:var(--amber-lt);color:var(--amber-dk);}
+.s-pend{background:var(--purple-lt);color:var(--purple-dk);}
+.due{font-size:11px;color:var(--tx3);}
+.due.over{color:#A32D2D;font-weight:500;}
+.tbl-wrap{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--tx2);background:var(--bg3);border-bottom:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;}
+td{padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--tx);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg2);}
+.tda{display:flex;gap:4px;opacity:0;}
+tr:hover .tda{opacity:1;}
+.ib{border:none;background:var(--bg3);border-radius:5px;width:26px;height:26px;cursor:pointer;font-size:12px;color:var(--tx2);}
+.ib:hover{background:var(--bd);}
+.ib.del:hover{background:var(--red-lt);color:#A32D2D;}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.ov.open{display:flex;}
+.modal{background:var(--bg);border-radius:var(--rl);width:100%;max-width:540px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.18);}
+.mhd{padding:20px 24px 0;display:flex;justify-content:space-between;align-items:center;}
+.mtitle{font-size:16px;font-weight:600;}
+.mx{border:none;background:var(--bg3);border-radius:var(--r);width:30px;height:30px;cursor:pointer;font-size:18px;color:var(--tx2);display:flex;align-items:center;justify-content:center;}
+.mbody{padding:18px 24px 24px;}
+.fr{margin-bottom:13px;}
+.fr label{display:block;font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em;}
+.fr input,.fr select,.fr textarea{width:100%;font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);color:var(--tx);outline:none;}
+.fr input:focus,.fr select:focus,.fr textarea:focus,.fr input[onfocus]{border-color:var(--navy);}
+.fr textarea{resize:vertical;min-height:65px;}
+.fr input[readonly]{background:var(--bg3);color:var(--tx2);}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.facts{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid var(--bd);}
+.btnc{border:1px solid var(--bd);background:var(--bg);color:var(--tx2);border-radius:var(--r);padding:8px 18px;font-size:13px;cursor:pointer;font-family:inherit;}
+.btns{background:var(--navy);color:#fff;border:none;border-radius:var(--r);padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;}
+.btns:hover{background:var(--navy-dk);}
+.prt{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:8px;width:100%;}
+.prth{display:grid;grid-template-columns:1fr 80px 70px 30px;background:var(--bg3);padding:7px 10px;font-size:11px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.03em;gap:6px;}
+.prr{display:grid;grid-template-columns:1fr 80px 70px 30px;gap:6px;padding:6px 8px;border-top:1px solid var(--bd);align-items:center;}
+.prr input{font-family:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;outline:none;width:100%;}
+.pradd{width:100%;background:var(--navy-lt);color:var(--navy);border:1px dashed #93A8CC;border-radius:var(--r);padding:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+.prpv{border:1px solid #93A8CC;border-radius:var(--r);overflow:hidden;margin-top:4px;}
+.prpvh{background:var(--navy);color:#fff;padding:7px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;}
+.prpvb{padding:8px 12px;background:#F4F6FA;}
+.prpvr{display:flex;justify-content:space-between;padding:4px 0;border-bottom:.5px solid var(--bd);font-size:13px;}
+.prpvr:last-of-type{border:none;}
+.empty{text-align:center;padding:3rem 1rem;color:var(--tx3);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--tx);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13px;z-index:1000;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none;}
+.toast.show{opacity:1;transform:none;}
+.toast.err{background:#A32D2D;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img src="data:image/jpeg;base64,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" alt="Solar King">
+    <div class="brand-name"><b>Solar King</b> <span style="color:rgba(255,255,255,.5);font-weight:400">· ติดตามงาน</span></div>
+  </div>
+  <div class="sync"><div class="dot" id="sdot"></div><span id="stxt">พร้อมใช้งาน</span></div>
+</div>
+
+<div class="tabbar">
+  <div class="tabs">
+    <button class="tab on" onclick="goTab('lead',this)">ลูกค้าใหม่<span class="cnt" id="c-lead">0</span></button>
+    <button class="tab" onclick="goTab('quote',this)">เสนอราคา<span class="cnt" id="c-quote">0</span></button>
+    <button class="tab" onclick="goTab('pr',this)">จัดซื้อ PR<span class="cnt" id="c-pr">0</span></button>
+    <button class="tab" onclick="goTab('construct',this)">ก่อสร้าง<span class="cnt" id="c-construct">0</span></button>
+    <button class="tab" onclick="goTab('permit',this)">ยื่นขออนุญาต<span class="cnt" id="c-permit">0</span></button>
+    <button class="tab" onclick="goTab('design',this)">📐 สรุปการออกแบบ</button>
+  </div>
+  <div class="vtg">
+    <button class="vb on" id="vk" onclick="goView('kanban')">⊞</button>
+    <button class="vb" id="vt" onclick="goView('table')">☰</button>
+  </div>
+</div>
+
+<div class="metrics">
+  <div class="metric"><div class="ml">งานทั้งหมด</div><div class="mn" id="m-all">0</div></div>
+  <div class="metric"><div class="ml">กำลังดำเนินการ</div><div class="mn" id="m-act">0</div></div>
+  <div class="metric"><div class="ml">เสร็จสิ้น</div><div class="mn" id="m-done">0</div></div>
+  <div class="metric"><div class="ml">เกินกำหนด</div><div class="mn red" id="m-over">0</div></div>
+</div>
+
+<div class="main">
+  <div class="toolbar">
+    <input id="srch" type="text" placeholder="ค้นหาชื่อโครงการ / เลข QT..." oninput="draw()">
+    <select id="fst" onchange="draw()"><option value="">ทุกสถานะ</option></select>
+    <button class="btn-add" onclick="showF()">+ เพิ่มรายการ</button>
+  </div>
+  <div id="area"></div>
+</div>
+
+<div class="ov" id="ovF" onclick="if(event.target.id==='ovF')closeF()">
+  <div class="modal">
+    <div class="mhd"><div class="mtitle" id="ftitle">เพิ่มรายการ</div><button class="mx" onclick="closeF()">×</button></div>
+    <div class="mbody" id="fbody"></div>
+  </div>
+</div>
+
+<div class="ov" id="ovP" onclick="if(event.target.id==='ovP')this.classList.remove('open')">
+  <div class="modal" style="max-width:600px">
+    <div class="mhd"><div class="mtitle" id="ptitle">ภาพรวมโปรเจกต์</div><button class="mx" onclick="document.getElementById('ovP').classList.remove('open')">×</button></div>
+    <div class="mbody" id="pbody"></div>
+  </div>
+</div>
+
+<!-- Next Step Modal -->
+<div class="ov" id="ovNext" onclick="if(event.target.id==='ovNext')this.classList.remove('open')">
+  <div class="modal" style="max-width:420px">
+    <div class="mhd" style="padding-bottom:16px">
+      <div class="mtitle" id="nptitle"></div>
+      <button class="mx" onclick="document.getElementById('ovNext').classList.remove('open')">×</button>
+    </div>
+    <div class="mbody" style="padding-top:4px">
+      <p id="npmsg" style="font-size:14px;color:var(--tx2);line-height:1.7;margin-bottom:18px"></p>
+      <div id="npbtns" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Design Summary Modal -->
+<div class="ov" id="ovDesign" onclick="if(event.target.id==='ovDesign')this.classList.remove('open')">
+  <div class="modal" style="max-width:620px;">
+    <div class="mhd"><div class="mtitle" id="dtitle">📐 บันทึกการออกแบบ</div><button class="mx" onclick="document.getElementById('ovDesign').classList.remove('open')">×</button></div>
+    <div class="mbody" id="dbody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API='https://script.google.com/macros/s/AKfycbxED99FY1UlxGZ66PhlhD1xhb3xCG-q6XeyZPpMj9woDy2AIoh7ojfcW6sSX9MDb91beA/exec';
+const TABS={lead:{lb:'ลูกค้าใหม่',sh:'ลูกค้าใหม่'},quote:{lb:'เสนอราคา',sh:'เสนอราคา'},pr:{lb:'จัดซื้อ PR',sh:'จัดซื้อPR'},construct:{lb:'ก่อสร้าง',sh:'ก่อสร้าง'},permit:{lb:'ยื่นขออนุญาต',sh:'ยื่นขออนุญาต'},design:{lb:'สรุปการออกแบบ',sh:'สรุปการออกแบบ'}};
+const STS={lead:['นัดสำรวจ','สำรวจแล้วเสร็จ','ออกแบบแล้ว'],quote:['อยู่ระหว่างเสนอราคา','เสนอราคาแล้วเสร็จ','ลูกค้าอนุมัติ','ลูกค้าไม่อนุมัติ'],pr:['ใบขอสั่งซื้อ PR','รอจัดส่ง','จัดส่งสำเร็จ'],construct:['จัดทำแบบ','ระหว่างก่อสร้าง','ก่อสร้างแล้วเสร็จ'],permit:['รอเอกสารลูกค้า','อยู่ระหว่างยื่นขอ','ยื่นขออนุญาตแล้วเสร็จ']};
+const DONE=['ออกแบบแล้ว','ลูกค้าอนุมัติ','จัดส่งสำเร็จ','ก่อสร้างแล้วเสร็จ','ยื่นขออนุญาตแล้วเสร็จ'];
+const ACT=['สำรวจแล้วเสร็จ','อยู่ระหว่างเสนอราคา','เสนอราคาแล้วเสร็จ','รอจัดส่ง','ระหว่างก่อสร้าง','อยู่ระหว่างยื่นขอ'];
+const FLD={
+  lead:[{k:'projectName',lb:'ชื่อโครงการ',t:'text',req:1},{k:'address',lb:'ที่อยู่',t:'text'},{k:'contactName',lb:'ชื่อผู้ติดต่อ',t:'text'},{k:'phone',lb:'เบอร์โทร',t:'text'},{k:'source',lb:'ที่มาของลูกค้า',t:'sel',opts:['Online','มีผู้แนะนำ']},{k:'status',lb:'สถานะ',t:'sts',req:1},{k:'assignee',lb:'ผู้รับผิดชอบ',t:'text'},{k:'dueDate',lb:'วันนัดสำรวจ',t:'date'},{k:'note',lb:'หมายเหตุ',t:'ta'}],
+  quote:[{k:'projectName',lb:'ชื่อโครงการ',t:'plink',req:1},{k:'qtNumber',lb:'เลขที่ QT',t:'text',ph:'QT202606001'},{k:'address',lb:'ที่อยู่',t:'text'},{k:'installType',lb:'รูปแบบ',t:'sel',opts:['EPC','BOS','อื่นๆ']},{k:'system',lb:'ประเภทระบบ',t:'sel',opts:['On-Grid','On-Grid Hybrid','Off-Grid Hybrid','อื่นๆ']},{k:'size',lb:'ขนาด kWp',t:'text'},{k:'status',lb:'สถานะ',t:'sts',req:1},{k:'assignee',lb:'ผู้รับผิดชอบ',t:'text'},{k:'referrer',lb:'ผู้แนะนำ',t:'text'},{k:'dueDate',lb:'กำหนด',t:'date'},{k:'note',lb:'หมายเหตุ',t:'ta'}],
+  pr:[{k:'qtNumber',lb:'เลขที่ QT อ้างอิง',t:'qlink',req:1},{k:'projectName',lb:'ชื่อโครงการ',t:'text'},{k:'prNumber',lb:'เลขที่ PR',t:'prnum',ph:'PR202606001'},{k:'items',lb:'รายการสินค้า (สูงสุด 10)',t:'pri'},{k:'supplier',lb:'ผู้จำหน่าย',t:'text'},{k:'status',lb:'สถานะ',t:'sts',req:1},{k:'assignee',lb:'ผู้รับผิดชอบ',t:'text'},{k:'dueDate',lb:'กำหนดรับของ',t:'date'},{k:'note',lb:'หมายเหตุ',t:'ta'}],
+  construct:[{k:'qtNumber',lb:'เลขที่ QT อ้างอิง',t:'qlink',req:1},{k:'projectName',lb:'ชื่อโครงการ',t:'text'},{k:'address',lb:'ที่อยู่',t:'text'},{k:'installType',lb:'รูปแบบ (จาก QT)',t:'qauto',src:'installType'},{k:'system',lb:'ประเภทระบบ (จาก QT)',t:'qauto',src:'system'},{k:'size',lb:'ขนาดออกแบบ kWp',t:'qauto',src:'size'},{k:'installedSize',lb:'ขนาดติดตั้งจริง kWp',t:'text'},{k:'status',lb:'สถานะ',t:'sts',req:1},{k:'assignee',lb:'ช่างผู้รับผิดชอบ',t:'text'},{k:'dueDate',lb:'กำหนดแล้วเสร็จ',t:'date'},{k:'note',lb:'หมายเหตุ',t:'ta'}],
+  permit:[{k:'qtNumber',lb:'เลขที่ QT อ้างอิง',t:'qlink',req:1},{k:'projectName',lb:'ชื่อโครงการ',t:'text'},{k:'address',lb:'ที่อยู่',t:'text'},{k:'permitType',lb:'ประเภทใบอนุญาต',t:'sel',opts:['ขอติดตั้งใหม่','ขอขยาย']},{k:'status',lb:'สถานะ',t:'sts',req:1},{k:'assignee',lb:'ผู้รับผิดชอบ',t:'text'},{k:'submitDate',lb:'วันยื่นเอกสาร',t:'date'},{k:'dueDate',lb:'วันนัดตรวจ',t:'date'},{k:'note',lb:'หมายเหตุ',t:'ta'}]
+};
+const SAMP={
+  lead:[],
+  quote:[],
+  pr:[],
+  construct:[],
+  permit:[]
+};
+let tab='lead',view='kanban',eid=null;
+let DB=JSON.parse(JSON.stringify(SAMP));
+let DESIGNS={}; // keyed by projectName
+
+function sc(s){if(DONE.includes(s))return 's-done';if(ACT.includes(s))return 's-act';if(s==='ลูกค้าไม่อนุมัติ')return 's-no';if(['นัดสำรวจ','ใบขอสั่งซื้อ PR','รอเอกสารลูกค้า','จัดทำแบบ'].includes(s))return 's-wait';return 's-pend';}
+function od(r){if(!r.dueDate||DONE.includes(r.status))return false;const d=new Date(r.dueDate);d.setHours(0,0,0,0);const n=new Date();n.setHours(0,0,0,0);return d<n;}
+function fd(d){if(!d)return'';const dt=new Date(d);if(isNaN(dt))return d;return dt.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});}
+function toast(m,e){const el=document.getElementById('toast');el.textContent=m;el.className='toast show'+(e?' err':'');setTimeout(()=>el.classList.remove('show'),3000);}
+function getQTs(){return[...new Set(DB.quote.map(r=>r.qtNumber).filter(Boolean))].sort();}
+function getProjs(){return[...new Set(DB.lead.map(r=>r.projectName).filter(Boolean))].sort();}
+function lnk(r){const ref=r.qtNumber||r.projectName;const key=r.qtNumber?'qtNumber':'projectName';const tabs=key==='qtNumber'?['pr','construct','permit']:['quote'];return tabs.reduce((n,k)=>n+(DB[k].some(x=>x[key]===ref)?1:0),0);}
+function esc(s){return(s||'').replace(/'/g,"\'")}
+
+function showProj(val){
+  document.getElementById('ptitle').textContent='📋 '+val;
+  const secs=[{k:'lead',lb:'ลูกค้าใหม่'},{k:'quote',lb:'เสนอราคา'},{k:'pr',lb:'จัดซื้อ PR'},{k:'construct',lb:'ก่อสร้าง'},{k:'permit',lb:'ยื่นขออนุญาต'}];
+  let h='';
+  secs.forEach(s=>{
+    const rows=DB[s.k].filter(r=>r.projectName===val||r.qtNumber===val);
+    if(!rows.length)return;
+    h+=`<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">${s.lb}</div>`;
+    rows.forEach(r=>{
+      const ref=r.qtNumber?`<span style="font-size:11px;color:var(--navy);font-weight:500;margin-right:6px">${r.qtNumber}</span>`:'';
+      const sub=[r.system,r.size?r.size+'kWp':'',r.installedSize?'ติดตั้ง:'+r.installedSize+'kWp':'',r.permitType].filter(Boolean).join(' · ');
+      h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:6px;gap:10px"><div>${ref}<span style="font-size:13px;font-weight:500">${r.projectName||'-'}</span>${sub?`<div style="font-size:11px;color:var(--tx2);margin-top:2px">${sub}</div>`:''}</div><span class="badge ${sc(r.status)}">${r.status}</span></div>`;
+    });
+    h+='</div>';
+  });
+  if(!h)h='<div class="empty"><p>ไม่พบงานที่เชื่อมกัน</p></div>';
+  document.getElementById('pbody').innerHTML=h;
+  document.getElementById('ovP').classList.add('open');
+}
+
+function upd(){
+  Object.keys(TABS).forEach(k=>document.getElementById('c-'+k).textContent=DB[k].length);
+  const all=Object.values(DB).flat();
+  document.getElementById('m-all').textContent=all.length;
+  document.getElementById('m-act').textContent=all.filter(r=>ACT.includes(r.status)).length;
+  document.getElementById('m-done').textContent=all.filter(r=>DONE.includes(r.status)).length;
+  const now=new Date();now.setHours(0,0,0,0);
+  document.getElementById('m-over').textContent=all.filter(r=>r.dueDate&&!DONE.includes(r.status)&&new Date(r.dueDate)<now).length;
+}
+
+function updFilter(){
+  const s=document.getElementById('fst');
+  s.innerHTML='<option value="">ทุกสถานะ</option>'+STS[tab].map(x=>`<option>${x}</option>`).join('');
+}
+function rows(){
+  const q=document.getElementById('srch').value.toLowerCase();
+  const fs=document.getElementById('fst').value;
+  return DB[tab].filter(r=>{
+    const m=!q||(r.projectName||'').toLowerCase().includes(q)||(r.qtNumber||'').toLowerCase().includes(q)||(r.prNumber||'').toLowerCase().includes(q);
+    return m&&(!fs||r.status===fs);
+  });
+}
+
+function draw(){
+  if(tab==='design'){drawDesign();return;}
+  // restore toolbar for non-design tabs
+  const addBtn=document.querySelector('.btn-add');
+  const vtg=document.querySelector('.vtg');
+  const toolbar=document.querySelector('.toolbar');
+  if(addBtn) addBtn.style.display='flex';
+  if(vtg) vtg.style.display='flex';
+  if(toolbar) toolbar.style.display='flex';
+  const rr=rows();
+  const area=document.getElementById('area');
+  if(!rr.length){area.innerHTML='<div class="empty"><div style="font-size:36px;margin-bottom:10px">📋</div><p>ยังไม่มีรายการ กด + เพิ่มรายการ</p></div>';return;}
+  view==='kanban'?dKanban(rr,area):dTable(rr,area);
+  // hide/show toolbar elements
+  const addBtn=document.querySelector('.btn-add');
+  const vtg=document.querySelector('.vtg');
+  if(addBtn) addBtn.style.display=tab==='design'?'none':'flex';
+  if(vtg) vtg.style.display=tab==='design'?'none':'flex';
+}
+function dKanban(rr,area){
+  const n=Math.min(STS[tab].length,5);
+  const cols=STS[tab].map(s=>{
+    const cc=rr.filter(r=>r.status===s);
+    const ch=cc.length?cc.map(cHtml).join(''):'<div style="text-align:center;padding:14px;color:var(--tx3);font-size:12px">ไม่มีรายการ</div>';
+    return `<div class="kcol"><div class="kch"><span class="kct">${s}</span><span class="kcn">${cc.length}</span></div>${ch}</div>`;
+  }).join('');
+  area.innerHTML=`<div class="kanban" style="grid-template-columns:repeat(${n},1fr)">${cols}</div>`;
+}
+function cHtml(r){
+  const over=od(r);
+  const lk=lnk(r);
+  const lb=lk>0?`<span class="lbadge" onclick="event.stopPropagation();showProj('${esc(r.qtNumber||r.projectName)}')">🔗 ${lk}</span>`:'';
+  const qt=r.qtNumber?`<div class="cqt">📄 ${r.qtNumber}</div>`:'';
+  let sub='';
+  if(tab==='pr'&&r.items){try{const its=JSON.parse(r.items);sub=its.slice(0,2).map(i=>i.item+(i.qty?' ×'+i.qty:'')).join(', ')+(its.length>2?` +${its.length-2}`:'' );}catch(e){}}
+  else sub=[r.system,r.size?r.size+'kWp':'',r.installedSize?'ติดตั้ง:'+r.installedSize+'kWp':'',r.permitType,r.source].filter(Boolean).join(' · ');
+  return `<div class="card" onclick="showF('${r.id}')"><div class="ctop"><div class="cname" onclick="event.stopPropagation();showProj('${esc(r.projectName||r.qtNumber)}')">${r.projectName||r.prNumber||'-'}</div>${lb}</div>${qt}${sub?`<div class="csub">${sub}</div>`:''}<div class="cft"><span class="badge ${sc(r.status)}" style="font-size:10px">${r.assignee||'ยังไม่มอบหมาย'}</span><div style="display:flex;align-items:center;gap:5px">${r.dueDate?`<span class="due${over?' over':''}">${fd(r.dueDate)}</span>`:''}<button class="cdel" onclick="event.stopPropagation();del('${tab}','${r.id}')">✕</button></div></div></div>`;
+}
+function dTable(rr,area){
+  const fs=FLD[tab].filter(f=>f.k!=='note'&&f.t!=='ta');
+  const th='<tr><th>#</th>'+fs.map(f=>`<th>${f.lb}</th>`).join('')+'<th>หมายเหตุ</th><th></th></tr>';
+  const tb=rr.map((r,i)=>{
+    const over=od(r);
+    const cells=fs.map(f=>{
+      if(f.k==='status')return`<td><span class="badge ${sc(r.status)}">${r.status||'-'}</span></td>`;
+      if(f.k==='projectName'){const lk=lnk(r);const lb2=lk>0?` <span class="lbadge" onclick="showProj('${esc(r.projectName)}')">🔗${lk}</span>`:'';return`<td><span style="cursor:pointer;font-weight:500" onclick="showProj('${esc(r.projectName)}')">${r[f.k]||'-'}</span>${lb2}</td>`;}
+      if(f.k==='qtNumber')return`<td style="color:var(--navy);font-weight:500">${r.qtNumber||'-'}</td>`;
+      if(f.k==='dueDate'||f.k==='submitDate')return`<td style="${over&&f.k==='dueDate'?'color:#A32D2D;font-weight:500':''}">${fd(r[f.k])}</td>`;
+      if(f.k==='items'&&r.items){try{const its=JSON.parse(r.items);return`<td>${its.map(i=>i.item+(i.qty?' ×'+i.qty:'')).join(', ')}</td>`;}catch(e){}}
+      return`<td>${r[f.k]||'-'}</td>`;
+    }).join('');
+    return`<tr><td style="color:var(--tx3);font-size:12px">${i+1}</td>${cells}<td style="color:var(--tx2);font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||'-'}</td><td><div class="tda"><button class="ib" onclick="showF('${r.id}')">✏</button><button class="ib del" onclick="del('${tab}','${r.id}')">✕</button></div></td></tr>`;
+  }).join('');
+  area.innerHTML=`<div class="tbl-wrap"><table><thead>${th}</thead><tbody>${tb}</tbody></table></div>`;
+}
+
+function showF(id){
+  eid=id||null;
+  const r=id?DB[tab].find(x=>x.id===id):null;
+  document.getElementById('ftitle').textContent=id?'แก้ไขรายการ':'เพิ่มรายการใหม่';
+  const flds=FLD[tab],sts=STS[tab];
+  let h='',pairs=[];
+  flds.forEach(f=>{
+    const v=r?(r[f.k]||''):'';
+    let inp='';
+    if(f.t==='sts') inp='<select id="f_'+f.k+'">'+sts.map(s=>`<option${v===s?' selected':''}>${s}</option>`).join('')+'</select>';
+    else if(f.t==='plink'){
+      const ops=getProjs().map(p=>`<option${v===p?' selected':''}>${p}</option>`).join('');
+      inp=`<div style="display:flex;gap:6px;align-items:center">
+        <select id="f_${f.k}_sel" onchange="(()=>{const s=document.getElementById('f_${f.k}_sel').value;const t=document.getElementById('f_${f.k}');if(s)t.value=s;})()" style="width:55%;font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);color:var(--tx);outline:none">
+          <option value="">-- เลือกจากลิสต์ --</option>${ops}
+        </select>
+        <span style="font-size:12px;color:var(--tx3);flex-shrink:0">หรือ</span>
+        <input type="text" id="f_${f.k}" value="${v}" placeholder="พิมพ์เอง เช่น SO-202606001" style="flex:1;font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);color:var(--tx);outline:none">
+      </div>`;
+    }
+    else if(f.t==='qlink'){const ops=getQTs().map(q=>`<option${v===q?' selected':''}>${q}</option>`).join('');inp=`<select id="f_${f.k}"><option value="">-- เลือกเลขที่ QT --</option>${ops}</select>`;}
+    else if(f.t==='qauto') inp=`<input type="text" id="f_${f.k}" value="${v}" placeholder="ดึงจาก QT อัตโนมัติ" readonly>`;
+    else if(f.t==='pri') inp=`<div id="priw"></div>`;
+    else if(f.t==='prnum'){inp=`<input type="text" id="f_${f.k}" value="${v}" placeholder="${f.ph||f.lb}" style="font-size:14px;font-weight:500;">`;} 
+    else if(f.t==='sel') inp=`<select id="f_${f.k}"><option value="">-- เลือก --</option>`+(f.opts||[]).map(o=>`<option${v===o?' selected':''}>${o}</option>`).join('')+'</select>';
+    else if(f.t==='ta') inp=`<textarea id="f_${f.k}" rows="2">${v}</textarea>`;
+    else inp=`<input type="${f.t==='date'?'date':'text'}" id="f_${f.k}" value="${v}" placeholder="${f.ph||f.lb}">`;
+    pairs.push(`<div class="fr"><label>${f.lb}${f.req?' *':''}</label>${inp}</div>`);
+  });
+  for(let i=0;i<pairs.length;i+=2){
+    const a=pairs[i],b=pairs[i+1];
+    const full=(a||'').includes('textarea')||(b||'').includes('textarea')||(a||'').includes('priw')||(a||'').includes('id="f_prNumber"')||(b||'').includes('id="f_prNumber"');
+    if(b&&!full)h+=`<div class="fgrid">${a}${b}</div>`;else{h+=a;if(b)h+=b;}
+  }
+  h+=`<div class="facts"><button class="btnc" onclick="closeF()">ยกเลิก</button><button class="btns" onclick="saveF()">บันทึก</button></div>`;
+  document.getElementById('fbody').innerHTML=h;
+  if(tab==='pr'){let its=[];try{its=r&&r.items?JSON.parse(r.items):[];}catch(e){}if(!its.length)its=[{item:'',qty:'',unit:''}];rPRI(its);}
+  // auto-fill address from lead when project selected
+  const projSel=document.getElementById('f_projectName_sel');
+  if(projSel){projSel.addEventListener('change',()=>{
+    const pn=document.getElementById('f_projectName');
+    if(projSel.value) pn.value=projSel.value;
+    const lead=DB.lead.find(r=>r.projectName===projSel.value);
+    const addr=document.getElementById('f_address');
+    if(lead&&addr) addr.value=lead.address||'';
+  });}
+  const projInput=document.getElementById('f_projectName');
+  if(projInput&&(tab==='quote'||tab==='permit')){
+    projInput.addEventListener('input',()=>{
+      const lead=DB.lead.find(r=>r.projectName===projInput.value);
+      const addr=document.getElementById('f_address');
+      if(lead&&addr) addr.value=lead.address||'';
+    });
+  }
+  const qtSel=document.getElementById('f_qtNumber');
+  if(qtSel){const fill=()=>{
+    const qt=DB.quote.find(q=>q.qtNumber===qtSel.value);
+    if(!qt)return;
+    ['projectName','installType','system','size'].forEach(k=>{const el=document.getElementById('f_'+k);if(el&&qt[k])el.value=qt[k];});
+    // fill address from lead
+    const lead=DB.lead.find(r=>r.projectName===qt.projectName);
+    const addr=document.getElementById('f_address');
+    if(lead&&addr) addr.value=lead.address||'';
+  };qtSel.addEventListener('change',fill);if(qtSel.value)fill();}
+  document.getElementById('ovF').classList.add('open');
+}
+function closeF(){document.getElementById('ovF').classList.remove('open');eid=null;}
+
+function rPRI(its){
+  const w=document.getElementById('priw');if(!w)return;
+  
+  // Table
+  let h='<div class="prt">';
+  h+='<div class="prth"><span>ชื่อสินค้า / อุปกรณ์</span><span style="text-align:center">จำนวน</span><span style="text-align:center">หน่วย</span><span></span></div>';
+  its.forEach((it,i)=>{
+    const bg = i%2===0?'':'background:#f9fafc;';
+    h+=`<div class="prr" style="${bg}">`;
+    h+=`<input class="pn" data-i="${i}" value="${(it.item||'').replace(/"/g,'&quot;')}" placeholder="เช่น SolarEdge 5000H Inverter" style="font-size:13px" onfocus="this.style.borderColor='#1B3A6B'" onblur="this.style.borderColor='var(--bd)'" oninput="pRefresh()">`;
+    h+=`<input class="pq" data-i="${i}" value="${it.qty||''}" placeholder="0" style="text-align:center;font-size:13px" onfocus="this.style.borderColor='#1B3A6B'" onblur="this.style.borderColor='var(--bd)'">`;
+    h+=`<input class="pu" data-i="${i}" value="${it.unit||''}" placeholder="ชุด" style="font-size:13px" onfocus="this.style.borderColor='#1B3A6B'" onblur="this.style.borderColor='var(--bd)'">`;
+    h+=its.length>1?`<button onclick="pDel(${i})" style="border:none;background:transparent;color:#A32D2D;cursor:pointer;font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center">×</button>`:'<div></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  
+  // Add button
+  if(its.length<10){
+    h+=`<button class="pradd" onclick="pAdd()">+ เพิ่มรายการ (${its.length}/10)</button>`;
+  } else {
+    h+='<div style="text-align:center;font-size:12px;color:var(--tx3);padding:6px">ครบ 10 รายการแล้ว</div>';
+  }
+
+  // Preview - always show, even if empty  
+  const fl=its.filter(x=>x.item&&x.item.trim());
+  h+='<div class="prpv" style="margin-top:10px">';
+  h+='<div class="prpvh">📋 พรีวิว PR</div>';
+  h+='<div class="prpvb">';
+  if(fl.length){
+    fl.forEach((it,i)=>{
+      h+=`<div class="prpvr"><span style="color:var(--tx)">${i+1}. ${it.item}</span><span style="color:var(--navy);font-weight:500">${it.qty||'-'} ${it.unit||''}</span></div>`;
+    });
+    h+=`<div style="text-align:right;font-size:11px;color:var(--tx3);margin-top:6px;padding-top:4px;border-top:.5px solid var(--bd)">รวม ${fl.length} รายการ</div>`;
+  } else {
+    h+='<div style="text-align:center;color:var(--tx3);font-size:12px;padding:8px 0">กรอกชื่อสินค้าด้านบนเพื่อดูพรีวิว</div>';
+  }
+  h+='</div></div>';
+
+  w.innerHTML=h;
+  w.dataset.its=JSON.stringify(its);
+}
+
+function pSave(){const w=document.getElementById('priw');if(!w)return[];let its=[];try{its=JSON.parse(w.dataset.its||'[]');}catch(e){}document.querySelectorAll('.pn').forEach((n,i)=>{if(its[i])its[i].item=n.value;});document.querySelectorAll('.pq').forEach((n,i)=>{if(its[i])its[i].qty=n.value;});document.querySelectorAll('.pu').forEach((n,i)=>{if(its[i])its[i].unit=n.value;});return its;}
+function pAdd(){
+  const its=pSave();
+  if(its.length<10) its.push({item:'',qty:'',unit:''});
+  rPRI(its);
+  setTimeout(()=>{const ns=document.querySelectorAll('.pn');if(ns.length)ns[ns.length-1].focus();},50);
+}
+function pDel(i){const its=pSave();its.splice(i,1);rPRI(its);}
+function pRefresh(){
+  // Update only the preview section without re-rendering inputs
+  const its=pSave();
+  const fl=its.filter(x=>x.item&&x.item.trim());
+  const pv=document.querySelector('.prpvb');
+  if(!pv)return;
+  let h='';
+  if(fl.length){
+    fl.forEach((it,i)=>{h+=`<div class="prpvr"><span style="color:var(--tx)">${i+1}. ${it.item}</span><span style="color:var(--navy);font-weight:500">${it.qty||'-'} ${it.unit||''}</span></div>`;});
+    h+=`<div style="text-align:right;font-size:11px;color:var(--tx3);margin-top:6px;padding-top:4px;border-top:.5px solid var(--bd)">รวม ${fl.length} รายการ</div>`;
+  } else {
+    h='<div style="text-align:center;color:var(--tx3);font-size:12px;padding:8px 0">กรอกชื่อสินค้าด้านบนเพื่อดูพรีวิว</div>';
+  }
+  pv.innerHTML=h;
+}
+function getPRI(){return JSON.stringify(pSave().filter(x=>x.item));}
+
+function saveF(){
+  const flds=FLD[tab];
+  const req=flds.find(f=>f.req&&!document.getElementById('f_'+f.k)?.value);
+  if(req){toast('กรุณากรอก '+req.lb,true);return;}
+  const obj={};
+  flds.forEach(f=>{if(f.t==='pri')obj[f.k]=getPRI();else obj[f.k]=document.getElementById('f_'+f.k)?.value||'';});
+  const isEdit = !!eid;
+  const curTab2 = tab;
+  if(isEdit){
+    obj.id=eid;
+    const ex=DB[curTab2].find(r=>r.id===eid);
+    obj.createdAt=ex?.createdAt||new Date().toISOString();
+    const idx=DB[curTab2].findIndex(r=>r.id===eid);
+    if(idx>=0) DB[curTab2][idx]={...DB[curTab2][idx],...obj};
+    toast('อัปเดตแล้ว ✓');
+  } else {
+    obj.id='ID-'+Date.now();
+    obj.createdAt=new Date().toISOString();
+    DB[curTab2].push(obj);
+    toast('เพิ่มรายการแล้ว ✓');
+  }
+  closeF(); upd(); draw();
+  push(curTab2, obj, isEdit);
+  checkNextStep(curTab2, obj);
+}
+function del(t,id){if(!confirm('ยืนยันลบรายการนี้?'))return;DB[t]=DB[t].filter(r=>r.id!==id);upd();draw();toast('ลบแล้ว');fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',tab:TABS[t].sh,id})}).catch(()=>{});}
+function push(t,obj,isEdit){const flds=FLD[t];const hdrs=['id','createdAt',...flds.map(f=>f.k)];const row=hdrs.map(h=>obj[h]||'');fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:isEdit?'update':'add',tab:TABS[t].sh,id:obj.id,row})}).catch(()=>{});}
+
+// ─── NEXT STEP PROMPT ────────────────────────────────
+function checkNextStep(t, obj) {
+  // ลูกค้าใหม่ → ออกแบบแล้ว → popup บันทึกการออกแบบ + ถามสร้างเสนอราคา
+  if (t === 'lead' && obj.status === 'ออกแบบแล้ว') {
+    showNextPrompt(
+      '✏️ ออกแบบแล้วเสร็จ!',
+      `โปรเจกต์ <b>${obj.projectName}</b> ออกแบบแล้วเสร็จ<br>ต้องการบันทึกข้อมูลการออกแบบและสร้างใบเสนอราคาไหม?`,
+      [
+        { label: '📐 บันทึกการออกแบบ', action: () => showDesignForm(obj.projectName) },
+        { label: '📋 สร้างใบเสนอราคา', action: () => {
+          const tabEl = document.querySelectorAll('.tab')[1];
+          goTab('quote', tabEl);
+          setTimeout(() => {
+            showF();
+            setTimeout(() => {
+              const pn = document.getElementById('f_projectName');
+              const ps = document.getElementById('f_projectName_sel');
+              if (pn) pn.value = obj.projectName;
+              if (ps) { for (let i=0; i<ps.options.length; i++) { if (ps.options[i].value === obj.projectName) { ps.selectedIndex = i; break; } } }
+              const addr = document.getElementById('f_address');
+              if (addr && obj.address) addr.value = obj.address;
+            }, 100);
+          }, 200);
+        }}
+      ]
+    );
+  }
+
+  // เสนอราคา → ลูกค้าอนุมัติ → สร้างงานก่อสร้าง + ยื่นขออนุญาตอัตโนมัติ
+  if (t === 'quote' && obj.status === 'ลูกค้าอนุมัติ') {
+    autoCreateNext(obj);
+  }
+}
+
+function autoCreateNext(src) {
+  const now = new Date().toISOString();
+  const lead = DB.lead.find(r => r.projectName === src.projectName) || {};
+  const address = lead.address || src.address || '';
+
+  // สร้างงานก่อสร้างอัตโนมัติ
+  const csId = 'CS-' + Date.now();
+  const csObj = {
+    id: csId, createdAt: now,
+    qtNumber: src.qtNumber || '',
+    projectName: src.projectName || '',
+    address: address,
+    installType: src.installType || '',
+    system: src.system || '',
+    size: src.size || '',
+    installedSize: '',
+    status: 'จัดทำแบบ',
+    assignee: '',
+    dueDate: '',
+    note: 'สร้างอัตโนมัติเมื่อลูกค้าอนุมัติ'
+  };
+  DB.construct.push(csObj);
+  push('construct', csObj, false);
+
+  // สร้างงานยื่นขออนุญาตอัตโนมัติ
+  const pmId = 'PM-' + (Date.now()+1);
+  const pmObj = {
+    id: pmId, createdAt: now,
+    qtNumber: src.qtNumber || '',
+    projectName: src.projectName || '',
+    address: address,
+    permitType: 'ขอติดตั้งใหม่',
+    status: 'รอเอกสารลูกค้า',
+    assignee: '',
+    submitDate: '',
+    dueDate: '',
+    note: 'สร้างอัตโนมัติเมื่อลูกค้าอนุมัติ'
+  };
+  DB.permit.push(pmObj);
+  push('permit', pmObj, false);
+
+  upd();
+  // แสดง popup แจ้งผล
+  showNextPrompt(
+    '🎉 ลูกค้าอนุมัติแล้ว!',
+    `สร้างงานอัตโนมัติให้แล้ว 2 รายการ:<br><br>
+    ✅ <b>งานก่อสร้าง</b> — ${src.projectName} (สถานะ: จัดทำแบบ)<br>
+    ✅ <b>งานยื่นขออนุญาต</b> — ${src.projectName} (สถานะ: รอเอกสารลูกค้า)`,
+    [
+      { label: '🏗 ไปที่งานก่อสร้าง', action: () => {
+        const els = document.querySelectorAll('.tab');
+        goTab('construct', els[3]);
+      }},
+      { label: '📄 ไปที่ยื่นขออนุญาต', action: () => {
+        const els = document.querySelectorAll('.tab');
+        goTab('permit', els[4]);
+      }}
+    ]
+  );
+}
+
+function prefillNext(targetTab, src) {
+  document.getElementById('ovNext').classList.remove('open');
+  const tabEls = document.querySelectorAll('.tab');
+  const tabKeys = ['lead','quote','pr','construct','permit'];
+  const idx = tabKeys.indexOf(targetTab);
+  if (idx >= 0) goTab(targetTab, tabEls[idx]);
+  setTimeout(() => {
+    showF();
+    setTimeout(() => {
+      // fill qtNumber
+      const qtSel = document.getElementById('f_qtNumber');
+      if (qtSel && src.qtNumber) {
+        for (let i=0; i<qtSel.options.length; i++) {
+          if (qtSel.options[i].value === src.qtNumber) { qtSel.selectedIndex = i; break; }
+        }
+        // trigger autofill
+        qtSel.dispatchEvent(new Event('change'));
+      }
+    }, 150);
+  }, 200);
+}
+
+function showNextPrompt(title, msg, actions) {
+  document.getElementById('nptitle').innerHTML = title;
+  document.getElementById('npmsg').innerHTML = msg;
+  const btns = document.getElementById('npbtns');
+  btns.innerHTML = '';
+  // Close button
+  const skip = document.createElement('button');
+  skip.className = 'btnc';
+  skip.textContent = 'ข้ามก่อน';
+  skip.onclick = () => document.getElementById('ovNext').classList.remove('open');
+  btns.appendChild(skip);
+  // Action buttons
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'btns';
+    b.textContent = a.label;
+    b.onclick = () => { document.getElementById('ovNext').classList.remove('open'); a.action(); };
+    btns.appendChild(b);
+  });
+  document.getElementById('ovNext').classList.add('open');
+}
+
+// ─── DESIGN SUMMARY ──────────────────────────────────
+function showDesignForm(projectName) {
+  const d = DESIGNS[projectName] || {};
+  document.getElementById('dtitle').textContent = '📐 บันทึกการออกแบบ — ' + projectName;
+  
+  // Equipment rows
+  let eqRows = d.equipment || [{item:'',qty:'',unit:''}];
+  
+  const html = `
+    <div style="background:var(--navy-lt);border:1px solid #93A8CC;border-radius:var(--r);padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--navy);">
+      <b>โปรเจกต์:</b> ${projectName}
+    </div>
+    <div class="fgrid">
+      <div class="fr"><label>ขนาดระบบ (kWp)</label><input type="text" id="d_size" value="${d.size||''}" placeholder="เช่น 10.5"></div>
+      <div class="fr"><label>ประเภทระบบ</label><select id="d_system"><option value="">-- เลือก --</option>${['On-Grid','On-Grid Hybrid','Off-Grid Hybrid','อื่นๆ'].map(o=>`<option${d.system===o?' selected':''}>${o}</option>`).join('')}</select></div>
+    </div>
+    <div class="fgrid">
+      <div class="fr"><label>จำนวนแผงโซลาร์</label><input type="text" id="d_panelQty" value="${d.panelQty||''}" placeholder="เช่น 24"></div>
+      <div class="fr"><label>ยี่ห้อ / รุ่นแผง</label><input type="text" id="d_panelModel" value="${d.panelModel||''}" placeholder="เช่น Leapton 620W"></div>
+    </div>
+    <div class="fgrid">
+      <div class="fr"><label>ยี่ห้อ / รุ่น Inverter</label><input type="text" id="d_inverter" value="${d.inverter||''}" placeholder="เช่น SolarEdge 5000H"></div>
+      <div class="fr"><label>ยี่ห้อ / รุ่น Optimizer</label><input type="text" id="d_optimizer" value="${d.optimizer||''}" placeholder="เช่น SolarEdge S650B (ถ้ามี)"></div>
+    </div>
+    <div class="fgrid">
+      <div class="fr"><label>ค่าไฟเฉลี่ย / เดือน (บาท)</label><input type="text" id="d_elec" value="${d.elec||''}" placeholder="เช่น 5000"></div>
+      <div class="fr"><label>ระยะคืนทุนโดยประมาณ (ปี)</label><input type="text" id="d_payback" value="${d.payback||''}" placeholder="เช่น 5-7 ปี"></div>
+    </div>
+    <div class="fr"><label>หมายเหตุ / ข้อสังเกต</label><textarea id="d_note" rows="2">${d.note||''}</textarea></div>
+    
+    <div class="fr">
+      <label>รายการอุปกรณ์ที่ต้องใช้</label>
+      <div id="d_eqwrap"></div>
+    </div>
+    <div class="facts">
+      <button class="btnc" onclick="document.getElementById('ovDesign').classList.remove('open')">ยกเลิก</button>
+      <button class="btns" onclick="saveDesign('${projectName}')">💾 บันทึกการออกแบบ</button>
+    </div>`;
+  
+  document.getElementById('dbody').innerHTML = html;
+  renderEQ(eqRows);
+  document.getElementById('ovDesign').classList.add('open');
+}
+
+function renderEQ(its) {
+  const w = document.getElementById('d_eqwrap'); if(!w) return;
+  let h = '<div class="prt"><div class="prth"><span>ชื่ออุปกรณ์</span><span style="text-align:center">จำนวน</span><span style="text-align:center">หน่วย</span><span></span></div>';
+  its.forEach((it,i)=>{
+    h+=`<div class="prr"><input class="eq-name" data-i="${i}" value="${(it.item||'').replace(/"/g,'&quot;')}" placeholder="เช่น สายไฟ DC 6mm²" onfocus="this.style.borderColor='#1B3A6B'" onblur="this.style.borderColor='var(--bd)'">`;
+    h+=`<input class="eq-qty" data-i="${i}" value="${it.qty||''}" placeholder="0" style="text-align:center" onfocus="this.style.borderColor='#1B3A6B'" onblur="this.style.borderColor='var(--bd)'">`;
+    h+=`<input class="eq-unit" data-i="${i}" value="${it.unit||''}" placeholder="ชุด/ม." onfocus="this.style.borderColor='#1B3A6B'" onblur="this.style.borderColor='var(--bd)'">`;
+    h+=its.length>1?`<button onclick="eqDel(${i})" style="border:none;background:transparent;color:#A32D2D;cursor:pointer;font-size:18px;width:28px;height:28px">×</button>`:'<div></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  if(its.length<20) h+=`<button class="pradd" onclick="eqAdd()">+ เพิ่มอุปกรณ์ (${its.length}/20)</button>`;
+  w.innerHTML=h; w.dataset.its=JSON.stringify(its);
+}
+
+function eqSave(){
+  const w=document.getElementById('d_eqwrap'); if(!w) return [];
+  let its=[]; try{its=JSON.parse(w.dataset.its||'[]');}catch(e){}
+  document.querySelectorAll('.eq-name').forEach((n,i)=>{if(its[i])its[i].item=n.value;});
+  document.querySelectorAll('.eq-qty').forEach((n,i)=>{if(its[i])its[i].qty=n.value;});
+  document.querySelectorAll('.eq-unit').forEach((n,i)=>{if(its[i])its[i].unit=n.value;});
+  return its;
+}
+function eqAdd(){const its=eqSave();if(its.length<20)its.push({item:'',qty:'',unit:''});renderEQ(its);setTimeout(()=>{const ns=document.querySelectorAll('.eq-name');if(ns.length)ns[ns.length-1].focus();},50);}
+function eqDel(i){const its=eqSave();its.splice(i,1);renderEQ(its);}
+
+function saveDesign(projectName) {
+  const equipment = eqSave().filter(x=>x.item);
+  DESIGNS[projectName] = {
+    projectName,
+    size: document.getElementById('d_size')?.value||'',
+    system: document.getElementById('d_system')?.value||'',
+    panelQty: document.getElementById('d_panelQty')?.value||'',
+    panelModel: document.getElementById('d_panelModel')?.value||'',
+    inverter: document.getElementById('d_inverter')?.value||'',
+    optimizer: document.getElementById('d_optimizer')?.value||'',
+    elec: document.getElementById('d_elec')?.value||'',
+    payback: document.getElementById('d_payback')?.value||'',
+    note: document.getElementById('d_note')?.value||'',
+    equipment,
+    savedAt: new Date().toISOString()
+  };
+  document.getElementById('ovDesign').classList.remove('open');
+  toast('บันทึกการออกแบบแล้ว ✓');
+  // if on design tab, refresh
+  if(tab==='design') drawDesign();
+}
+
+function goTab(t,el){
+  tab=t;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  if(t==='design'){drawDesign();return;}
+  updFilter();draw();
+}
+function goView(v){view=v;document.getElementById('vk').classList.toggle('on',v==='kanban');document.getElementById('vt').classList.toggle('on',v==='table');draw();}
+
+function drawDesign(){
+  const addBtn=document.querySelector('.btn-add');
+  const vtg=document.querySelector('.vtg');
+  const toolbar=document.querySelector('.toolbar');
+  if(addBtn) addBtn.style.display='none';
+  if(vtg) vtg.style.display='none';
+  if(toolbar) toolbar.style.display='none';
+  const area=document.getElementById('area');
+  // Get all unique QT numbers
+  // Show projects from lead that have status ออกแบบแล้ว or from DESIGNS
+  const designProjects = DB.lead.filter(r=>r.status==='ออกแบบแล้ว');
+  const allDesignKeys = [...new Set([...designProjects.map(r=>r.projectName), ...Object.keys(DESIGNS)])];
+  
+  if(!allDesignKeys.length){
+    area.innerHTML='<div class="empty"><div style="font-size:36px;margin-bottom:10px">📐</div><p>ยังไม่มีโปรเจกต์ที่ออกแบบแล้ว</p></div>';
+    return;
+  }
+
+  // Add new design button
+  let html=`<div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+    <button class="btn-add" onclick="showDesignForm(prompt('ชื่อโครงการ:'))" style="display:flex">+ บันทึกการออกแบบใหม่</button>
+  </div>`;
+
+  allDesignKeys.forEach(pName=>{
+    const d = DESIGNS[pName]||{};
+    const lead = DB.lead.find(r=>r.projectName===pName)||{};
+    const qt = DB.quote.find(r=>r.projectName===pName)||{};
+    const hasDesign = !!DESIGNS[pName];
+
+    html+=`<div style="background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);margin-bottom:16px;overflow:hidden;">
+      <div style="background:var(--navy);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:15px;font-weight:600;color:#fff;">${pName}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;">${lead.address||''} ${qt.qtNumber?'· '+qt.qtNumber:''}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          ${hasDesign?'<span class="badge s-done">บันทึกแล้ว</span>':'<span class="badge s-wait">ยังไม่บันทึก</span>'}
+          <button onclick="showDesignForm('${pName.replace(/'/g,"\'")}') " style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:var(--r);padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;">✏️ ${hasDesign?'แก้ไข':'บันทึก'}</button>
+        </div>
+      </div>
+
+      ${hasDesign?`
+      <div style="padding:16px 18px;border-bottom:1px solid var(--bd);">
+        <div style="font-size:11px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;">ข้อมูลระบบ</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;">
+          ${[
+            {lb:'ประเภทระบบ',val:d.system},
+            {lb:'ขนาดระบบ',val:d.size?d.size+' kWp':''},
+            {lb:'จำนวนแผง',val:d.panelQty?d.panelQty+' แผ่น':''},
+            {lb:'ยี่ห้อ/รุ่นแผง',val:d.panelModel},
+          ].map(x=>`<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;">
+            <div style="font-size:11px;color:var(--tx2);margin-bottom:3px;">${x.lb}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--navy);">${x.val||'-'}</div>
+          </div>`).join('')}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+          ${[
+            {lb:'Inverter',val:d.inverter},
+            {lb:'Optimizer',val:d.optimizer||'-'},
+            {lb:'ค่าไฟเฉลี่ย/เดือน',val:d.elec?d.elec+' บาท':''},
+            {lb:'ระยะคืนทุน',val:d.payback?d.payback+' ปี':''},
+          ].map(x=>`<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;">
+            <div style="font-size:11px;color:var(--tx2);margin-bottom:3px;">${x.lb}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--navy);">${x.val||'-'}</div>
+          </div>`).join('')}
+        </div>
+        ${d.note?`<div style="margin-top:10px;padding:10px 12px;background:var(--amber-lt);border-radius:var(--r);font-size:13px;color:var(--amber-dk);">📝 ${d.note}</div>`:''}
+      </div>
+      ${d.equipment&&d.equipment.length?`
+      <div style="padding:14px 18px;">
+        <div style="font-size:11px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;">รายการอุปกรณ์ (${d.equipment.length} รายการ)</div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:var(--bg3);">
+            <th style="text-align:left;padding:7px 12px;font-size:11px;font-weight:600;color:var(--tx2);border-bottom:1px solid var(--bd);">#</th>
+            <th style="text-align:left;padding:7px 12px;font-size:11px;font-weight:600;color:var(--tx2);border-bottom:1px solid var(--bd);">ชื่ออุปกรณ์</th>
+            <th style="text-align:center;padding:7px 12px;font-size:11px;font-weight:600;color:var(--tx2);border-bottom:1px solid var(--bd);">จำนวน</th>
+            <th style="text-align:left;padding:7px 12px;font-size:11px;font-weight:600;color:var(--tx2);border-bottom:1px solid var(--bd);">หน่วย</th>
+          </tr></thead>
+          <tbody>${d.equipment.map((it,i)=>`<tr style="${i%2===0?'':'background:#f9fafc'}">
+            <td style="padding:7px 12px;color:var(--tx3);font-size:12px;">${i+1}</td>
+            <td style="padding:7px 12px;font-weight:500;">${it.item}</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--navy);font-weight:600;">${it.qty||'-'}</td>
+            <td style="padding:7px 12px;color:var(--tx2);">${it.unit||'-'}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>`:''}
+      `:`<div style="padding:14px 18px;color:var(--tx3);font-size:13px;">ยังไม่มีข้อมูลการออกแบบ — กด "บันทึก" เพื่อเพิ่มข้อมูล</div>`}
+    </div>`;
+  });
+  area.innerHTML=html;
+}
+
+// INIT - load sample immediately
+updFilter();upd();draw();
+
+// Background Sheets sync
+setTimeout(async()=>{
+  document.getElementById('sdot').className='dot sp';
+  document.getElementById('stxt').textContent='กำลังซิงค์...';
+  try{
+    const res=await Promise.all(Object.keys(TABS).map(async k=>{
+      const r=await fetch(API+'?tab='+encodeURIComponent(TABS[k].sh));
+      const raw=await r.json();
+      const hdrs=raw[0]||[];
+      const rws=raw.slice(1).map(row=>{const o={};hdrs.forEach((h,i)=>o[h]=row[i]||'');return o;}).filter(r=>r.id);
+      if(rws.length>0)DB[k]=rws;
+      return rws.length;
+    }));
+    const tot=res.reduce((a,b)=>a+b,0);
+    document.getElementById('sdot').className='dot';
+    document.getElementById('stxt').textContent='ซิงค์แล้ว';
+    if(tot>0){upd();draw();}
+  }catch(e){
+    document.getElementById('sdot').className='dot';
+    document.getElementById('stxt').textContent='ข้อมูลตัวอย่าง';
+  }
+},1500);
+</script>
+</body>
+</html>
