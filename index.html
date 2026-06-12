@@ -218,7 +218,7 @@ const SAMP={
   permit:[]
 };
 let tab='lead',view='kanban',eid=null;
-let DB=JSON.parse(JSON.stringify(SAMP));
+let DB={lead:[],quote:[],pr:[],construct:[],permit:[]};
 let DESIGNS={}; // keyed by projectName
 
 function sc(s){if(DONE.includes(s))return 's-done';if(ACT.includes(s))return 's-act';if(s==='ลูกค้าไม่อนุมัติ')return 's-no';if(['นัดสำรวจ','ใบขอสั่งซื้อ PR','รอเอกสารลูกค้า','จัดทำแบบ'].includes(s))return 's-wait';return 's-pend';}
@@ -251,7 +251,10 @@ function showProj(val){
 }
 
 function upd(){
-  Object.keys(TABS).forEach(k=>document.getElementById('c-'+k).textContent=DB[k].length);
+  Object.keys(TABS).forEach(k=>{
+    const el=document.getElementById('c-'+k);
+    if(el) el.textContent=(DB[k]||[]).length;
+  });
   const all=Object.values(DB).flat();
   document.getElementById('m-all').textContent=all.length;
   document.getElementById('m-act').textContent=all.filter(r=>ACT.includes(r.status)).length;
