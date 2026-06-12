@@ -255,7 +255,7 @@ function upd(){
     const el=document.getElementById('c-'+k);
     if(el) el.textContent=(DB[k]||[]).length;
   });
-  const all=Object.values(DB).flat();
+  const all=Object.keys(DB).filter(k=>k!=='design').map(k=>DB[k]).flat();
   document.getElementById('m-all').textContent=all.length;
   document.getElementById('m-act').textContent=all.filter(r=>ACT.includes(r.status)).length;
   document.getElementById('m-done').textContent=all.filter(r=>DONE.includes(r.status)).length;
