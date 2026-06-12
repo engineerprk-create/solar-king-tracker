@@ -841,7 +841,7 @@ function loadSheet(tabKey, sheetName, cb) {
   };
   const s = document.createElement('script');
   s.id = cbName + '_s';
-  s.src = API + '?tab=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
+  s.src = API + '?tab=' + encodeURIComponent(sheetName) + '&callback=' + cbName + '&t=' + Date.now();
   s.onerror = () => { delete window[cbName]; s.remove(); cb(0); };
   document.head.appendChild(s);
 }
